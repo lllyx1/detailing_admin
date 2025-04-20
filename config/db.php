@@ -3,8 +3,8 @@
 return [
     'class' => 'yii\db\Connection',
     'dsn' => 'mysql:host=MySQL-5.7;dbname=rustam',
-    'username' => 'root',
-    'password' => '',
+    'username' => 'a',
+    'password' => 'a',
     'charset' => 'utf8',
 
     // Schema cache options (for production environment)
