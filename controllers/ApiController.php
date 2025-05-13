@@ -7,6 +7,7 @@ use app\models\ResumeSearch;
 use yii\rest\Controller;
 use yii\web\Response;
 use yii\helpers\ArrayHelper;
+use app\models\City;
 
 class ApiController extends Controller
 {
@@ -56,16 +57,30 @@ class ApiController extends Controller
         $result = [];
         foreach ($resumes as $resume) {
             $resumeData = $resume->attributes; // Получаем атрибуты резюме
-            $resumeData['resumePhotos'] = ArrayHelper::toArray($resume->resumePhotos, [
-                'app\models\ResumePhoto' => [
-                    'id',
-                    'file',
-                    'resume_id',
-                ],
-            ]);
+            $resumeData['resumePhotos'] = []; // Инициализируем массив для фотографий
+            foreach ($resume->resumePhotos as $photo) {
+                $resumeData['resumePhotos'][] = [
+                    'id' => $photo->id,
+                    'file' => $photo->file,
+                    'thumbUrl' => $photo->getThumbUploadUrl('file'), // Получаем URL миниатюры
+                ];
+            }
             $result[] = $resumeData; // Добавляем резюме с фотографиями в результат
         }
 
         return $result; // Возвращаем результат
+    }
+
+    public function actionCity()
+    {
+        $cities = City::find()->all();
+        $result = [];
+        foreach ($cities as $city) {
+            $result[] = [
+                'id' => $city->id,
+                'city' => $city->city,
+            ];
+        }
+        return $result;
     }
 }
