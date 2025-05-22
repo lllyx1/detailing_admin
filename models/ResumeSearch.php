@@ -5,19 +5,21 @@ namespace app\models;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\Resume;
+use Yii;
 
 /**
  * ResumeSearch represents the model behind the search form of `app\models\Resume`.
  */
 class ResumeSearch extends Resume
 {
+    public $city;
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['id'], 'integer'],
+            [['id', 'city'], 'integer'],
             [['title', 'body', 'age', 'name', 'phone'], 'safe'],
         ];
     }
@@ -40,8 +42,7 @@ class ResumeSearch extends Resume
      */
     public function search($params)
     {
-        $query = Resume::find()->joinWith('resumePhotos');
-
+        $query = Resume::find()->joinWith(['resumeCities']);
 
         // add conditions that should always apply here
 
@@ -59,8 +60,9 @@ class ResumeSearch extends Resume
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
+            'resume.id' => $this->id,
             'age' => $this->age,
+            'resume_city.city_id' => $this->city,
         ]);
 
         $query->andFilterWhere(['like', 'title', $this->title])

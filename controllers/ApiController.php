@@ -28,15 +28,14 @@ class ApiController extends Controller
      *
      * @param int|null $minAge Minimum age
      * @param int|null $maxAge Maximum age
-     * @return array
      */
-    public function actionSearch(int $minAge = null, int $maxAge = null): array
+    public function actionSearch(int $minAge = null, int $maxAge = null)
     {
         $searchModel = new ResumeSearch();
         $params = Yii::$app->request->queryParams;
 
         // Загружаем параметры запроса
-        $searchModel->load($params);
+        $searchModel->load($params, '');
 
         // Создаем DataProvider
         $dataProvider = $searchModel->search($params);
@@ -56,7 +55,14 @@ class ApiController extends Controller
         // Формируем ответ с использованием ArrayHelper
         $result = [];
         foreach ($resumes as $resume) {
-            $resumeData = $resume->attributes; // Получаем атрибуты резюме
+            $resumeData = $resume->attributes;
+
+            // Добавляем информацию о городе
+            $resumeData['city'] = null;
+            if (!empty($resume->resumeCities)) {
+                $resumeData['city'] = $resume->resumeCities[0]->city_id;
+            }
+
             $resumeData['resumePhotos'] = []; // Инициализируем массив для фотографий
             foreach ($resume->resumePhotos as $photo) {
                 $resumeData['resumePhotos'][] = [
@@ -67,7 +73,6 @@ class ApiController extends Controller
             }
             $result[] = $resumeData; // Добавляем резюме с фотографиями в результат
         }
-
         return $result; // Возвращаем результат
     }
 
