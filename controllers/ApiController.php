@@ -20,6 +20,15 @@ class ApiController extends Controller
                     'application/json' => Response::FORMAT_JSON,
                 ],
             ],
+            'cors' => [
+                'class' => \yii\filters\Cors::class,
+                'cors' => [
+                    'Origin' => ['*'], // Разрешаем все источники
+                    'Access-Control-Request-Method' => ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+                    'Access-Control-Request-Headers' => ['*'],
+                    'Access-Control-Allow-Credentials' => true,
+                ],
+            ],
         ];
     }
 
