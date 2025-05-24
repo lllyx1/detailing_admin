@@ -125,4 +125,10 @@ class SiteController extends Controller
     {
         return $this->render('about');
     }
+
+    public function actionResume()
+    {
+        $this->layout = 'bots';
+        return $this->render('resume');
+    }
 }
