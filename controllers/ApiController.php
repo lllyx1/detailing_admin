@@ -13,6 +13,8 @@ class ApiController extends Controller
 {
     public function behaviors()
     {
+        $behaviors = parent::behaviors();
+        unset($behaviors['authenticator']);
         return [
             'contentNegotiator' => [
                 'class' => \yii\filters\ContentNegotiator::class,
@@ -23,10 +25,15 @@ class ApiController extends Controller
             'cors' => [
                 'class' => \yii\filters\Cors::class,
                 'cors' => [
-                    'Origin' => ['*'], // Разрешаем все источники
-                    'Access-Control-Request-Method' => ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
                     'Access-Control-Request-Headers' => ['*'],
-                    'Access-Control-Allow-Credentials' => true,
+                    'Access-Control-Allow-Credentials' => null,
+                    'Access-Control-Max-Age' => 86400,
+                    'Access-Control-Expose-Headers' => [
+                        'X-Pagination-Current-Page',
+                        'X-Pagination-Page-Count',
+                        'X-Pagination-Per-Page',
+                        'X-Pagination-Total-Count'
+                    ],
                 ],
             ],
         ];
