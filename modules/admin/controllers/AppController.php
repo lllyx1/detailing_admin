@@ -3,7 +3,7 @@ namespace app\modules\admin\controllers;
 
 use yii\web\Controller;
 use yii\filters\AccessControl;
-
+use Yii;
 class AppController extends Controller
 {
     public function init()
@@ -28,7 +28,12 @@ class AppController extends Controller
                         'roles' => ['@'], // '@' означает авторизованный пользователь
                     ]
                 ],
+                'denyCallback' => function ($rule, $action) {
+                    // Перенаправление на страницу входа
+                    Yii::$app->response->redirect(['site/login']);
+                }
             ],
+
         ];
     }
 }

@@ -14,18 +14,7 @@ class DefaultController extends AppController
      * Renders the index view for the module
      * @return string
      */
-    public function behaviors(): array
-    {
-        return array_merge(parent::behaviors(), [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ]);
 
-    }
     public function actionIndex()
     {
         return $this->render('index');
