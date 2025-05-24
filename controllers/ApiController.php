@@ -89,7 +89,7 @@ class ApiController extends Controller
             }
             $result[] = $resumeData; // Добавляем резюме с фотографиями в результат
         }
-        $result['pagination'] = $dataProvider->getTotalCount();
+        $result['totalCount'] = $dataProvider->getTotalCount();
         return $result; // Возвращаем результат
     }
 
