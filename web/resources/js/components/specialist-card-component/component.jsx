@@ -3,10 +3,6 @@ import React, { useState } from "react";
 export default function Card({ name, title, body, photos = [], phone }) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  if (photos.length === 0) {
-    return null;
-  }
-
   const prevPhoto = (e) => {
     e.preventDefault();
     setCurrentIndex((prev) => (prev === 0 ? photos.length - 1 : prev - 1));
@@ -22,7 +18,7 @@ export default function Card({ name, title, body, photos = [], phone }) {
       <div className="bg-white rounded-2xl border border-[#E7E7E7] p-6 max-w-sm mx-auto">
         <div className="relative">
           <img
-            src={`https://detailingcitybot.ru/web/uploads/resume_photos/1/thumb-${photos[currentIndex]}`}
+            src={`https://detailingcitybot.ru/${photos[currentIndex]}`}
             alt={name}
             className="w-full h-72 object-cover rounded-xl"
           />

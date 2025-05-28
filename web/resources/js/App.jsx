@@ -1,150 +1,134 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useMemo, useCallback, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useCities } from './hooks/useCities';
 import Header from './components/city-component/component';
 import FilterBtn from './components/filter-btn-component/component';
 import Card from './components/specialist-card-component/component';
-import './App.css';
+import Pagination from "./components/pages-component/component";
+import Footer from './components/footer-component/component';
+import "./App.css";
 
-function calculateAge(birthDateStr) {
-  const birthDate = new Date(birthDateStr);
-  const today = new Date();
-  let age = today.getFullYear() - birthDate.getFullYear();
-  const m = today.getMonth() - birthDate.getMonth();
-  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-    age--;
-  }
-  return age;
+const API_URL = 'https://detailingcitybot.ru/web/api';
+const ITEMS_ON_PAGE = 10
+
+function getFiltersFromParams(params) {
+  return {
+    city: params.get('city') || '',
+    page: params.get('page') || 1,
+    minAge: params.get('minAge') || '',
+    maxAge: params.get('maxAge') || '',
+  };
 }
+
+
 
 function App() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { cities } = useCities();
-  const [filters, setFilters] = useState({
-    city: '',
-    ageFrom: '',
-    ageTo: '',
-  });
+  const filters = getFiltersFromParams(searchParams);
+
   const [specialists, setSpecialists] = useState([]);
-  const [filteredSpecialists, setFilteredSpecialists] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [totalCount, setTotalCount] = useState();
 
-  useEffect(() => {
-    setFilters({
-      city: searchParams.get('city') || '',
-      ageFrom: searchParams.get('ageFrom') || '',
-      ageTo: searchParams.get('ageTo') || '',
-    });
-  }, [searchParams]);
-
-  const onChangeField = (field, value) => {
+  const onChangeField = useCallback((field, value) => {
     const newParams = new URLSearchParams(searchParams);
     value ? newParams.set(field, value) : newParams.delete(field);
     setSearchParams(newParams);
-  };
-
-
+  }, [searchParams, setSearchParams]);
 
   useEffect(() => {
     if (cities.length === 0) return;
 
     const cityInParams = searchParams.get('city');
     if (!cityInParams) {
-      const citiesMap = {};
-
-      if (Array.isArray(cities)) {
-        cities.forEach(({ id, city }) => {
-          citiesMap[id] = city;
-        });
-      }
-
-      const firstCityId = Object.keys(citiesMap)[0];
+      const firstCityId = Array.isArray(cities) && cities.length > 0 ? cities[0].id : null;
       if (firstCityId) {
         onChangeField("city", firstCityId);
-        setFilters(prev => ({ ...prev, city: firstCityId }));
       }
     }
-  }, [cities, searchParams, setSearchParams]);
-
-
+  }, [cities, searchParams, onChangeField]);
 
   useEffect(() => {
     async function fetchSpecialists() {
+      const { city, page, minAge, maxAge } = filters;
+      if (!city) return;
+
       setLoading(true);
       setError(null);
 
       try {
-        const params = new URLSearchParams();
-        if (filters.city) params.append('city', filters.city);
-
-        const response = await fetch(
-          `https://detailingcitybot.ru/web/api/search?${params.toString()}`
-        );
+        const params = new URLSearchParams({ city, page, minAge, maxAge, 'per-page': ITEMS_ON_PAGE});
+        const response = await fetch(`${API_URL}/search?${params.toString()}`);
 
         if (!response.ok) throw new Error(`Ошибка ${response.status}`);
 
         const data = await response.json();
-        setSpecialists(data);
+        if (data.error) throw new Error(data.error);
+        setTotalCount(Number(data.totalCount) || 0);
+
+
+        const specialistsArray = Object.entries(data)
+          .filter(([key, value]) => key !== 'totalCount' && typeof value === 'object' && value.id)
+          .map(([_, value]) => value);
+        setSpecialists(specialistsArray);
       } catch (e) {
         setError(e.message);
+        setSpecialists([]);
       } finally {
         setLoading(false);
       }
     }
 
     fetchSpecialists();
-  }, [filters.city]);
+  }, [filters.city, filters.page, filters.minAge, filters.maxAge]);
 
-
-  useEffect(() => {
-    if (!specialists.length) {
-      setFilteredSpecialists([]);
-      return;
-    }
-
-    const ageFromNum = filters.ageFrom ? Number(filters.ageFrom) : null;
-    const ageToNum = filters.ageTo ? Number(filters.ageTo) : null;
-
-
-    const filtered = specialists.filter(specialist => {
-      const age = calculateAge(specialist.age);
-
-      if (ageFromNum !== null && age < ageFromNum) return false;
-      if (ageToNum !== null && age > ageToNum) return false;
-
-      return true;
-    });
-
-    setFilteredSpecialists(filtered);
-  }, [specialists, filters.ageFrom, filters.ageTo]);
+  console.log(specialists);
 
   return (
     <>
       <Header city={filters.city} onChangeCity={onChangeField} />
-      <div className='flex justify-between mt-6 mx-5'>
-        <span className='font-montserrat text-[#868686]'>
-          Для вас найдено {loading ? '...' : filteredSpecialists.length} <br /> специалистов
-        </span>
-        <FilterBtn filters={filters} onChange={onChangeField} />
-      </div>
-      <div className='flex flex-col gap-4 mt-8 mx-5'>
-        {error && <div className="text-red-600 mb-4">Ошибка: {error}</div>}
-        {loading && <div>Загрузка...</div>}
-        {!loading && !error && filteredSpecialists.length === 0 && (
-          <div>Специалисты не найдены</div>
-        )}
-        {!loading && !error && filteredSpecialists.map(specialist => (
-          <Card
-            key={specialist.id || specialist.phone}
-            name={specialist.name}
-            title={specialist.title}
-            body={specialist.body}
-            phone={specialist.phone}
-            photos={specialist.resumePhotos?.map(photo => photo.file) || []}
-          />
-        ))}
-      </div>
+      <main className='min-h-screen flex flex-col'>
+        <div className='flex justify-between mt-6 mx-5'>
+          <span className='font-montserrat text-[#868686]'>
+            Для вас найдено {loading ? '...' : totalCount} <br /> специалистов
+          </span>
+          <FilterBtn filters={filters} onChange={onChangeField} />
+        </div>
+
+        <div className='flex flex-col gap-4 mt-8 mx-5'>
+          {error && <div className="text-red-600 mb-4">Ошибка: {error}</div>}
+          {loading && (
+            <div className="space-y-4 animate-pulse">
+              {[...Array(3)].map((_, i) => (
+                <div key={i} className="h-24 bg-gray-200 rounded-xl" />
+              ))}
+            </div>
+          )}
+          {!loading && !error && specialists.length === 0 && (
+            <div>Специалисты не найдены</div>
+          )}
+          {!loading && !error && specialists.map(specialist => (
+            <Card
+              key={specialist.id}
+              name={specialist.name}
+              title={specialist.title}
+              body={specialist.body}
+              phone={specialist.phone}
+              photos={specialist.resumePhotos?.map(photo => photo.thumbUrl) || []}
+            />
+          ))}
+        </div>
+
+        <Pagination
+          currentPage={Number(filters.page)}
+          onPageChange={(page) => onChangeField("page", page)}
+          totalCount={totalCount || 0}
+          pageSize={ITEMS_ON_PAGE}
+        />
+        <Footer />
+      </main>
     </>
   );
 }

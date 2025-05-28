@@ -36,8 +36,8 @@ export default function BtnComponent({ filters, onChange }) {
                 type="number"
                 min="0"
                 max="100"
-                value={filters.ageFrom}
-                onChange={e => onChange("ageFrom", e.target.value)}
+                value={filters.minAge}
+                onChange={e => onChange("minAge", e.target.value)}
                 className="mt-1 px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
                 placeholder="от"
               />
@@ -49,8 +49,8 @@ export default function BtnComponent({ filters, onChange }) {
                 type="number"
                 min="0"
                 max="100"
-                value={filters.ageTo}
-                onChange={e => onChange("ageTo", e.target.value)}
+                value={filters.maxAge}
+                onChange={e => onChange("maxAge", e.target.value)}
                 className="mt-1 px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
                 placeholder="до"
               />
