@@ -29,7 +29,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
 <body>
 
 <style>
-    .bg-\[\#222222\] {
+    .flex-col.bg-\[\#222222\]  {
         background-image: url(<?= Yii::getAlias('@web/img/eng_word_row_r.svg') ?>);
         background-position: right;
         background-repeat: no-repeat;

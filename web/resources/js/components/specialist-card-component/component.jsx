@@ -13,12 +13,14 @@ export default function Card({ name, title, body, photos = [], phone }) {
     setCurrentIndex((prev) => (prev === photos.length - 1 ? 0 : prev + 1));
   };
 
+  const cleanPhone = phone.replace(/[^\d+]/g, '');
+
   return (
-    <a href={`tel:${phone}`} className="block max-w-[100%] mx-auto no-underline">
+    <a href={`tel:${cleanPhone}`} className="block max-w-[100%] mx-auto no-underline">
       <div className="bg-white rounded-2xl border border-[#E7E7E7] p-6 max-w-sm mx-auto">
         <div className="relative">
           <img
-            src={`http://detailingcitybot.ru/${photos[currentIndex]}`}
+            src={`https://detailingcitybot.ru/${photos[currentIndex]}`}
             alt={name}
             className="w-full h-72 object-cover rounded-xl"
           />
@@ -85,7 +87,7 @@ export default function Card({ name, title, body, photos = [], phone }) {
           <p className="text-black text-sm font-montserrat whitespace-pre-line">{body}</p>
         </div>
         <div className="btn-parent-block text-center">
-          <a href={`tel:${phone}`} className="block text-blue-600 font-montserrat text-sm mt-4 btn">
+          <a href={`tel:${cleanPhone}`} className="block text-blue-600 font-montserrat text-sm mt-4 btn">
             Позвонить
           </a>
         </div>
