@@ -1,5 +1,22 @@
-html, body, #root {
-  height: 100%;
+#root {
+  height: auto;
   margin: 0;
   padding: 0;
+}
+.btn {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #808080;
+  color: white;
+  text-decoration: none;
+  border-radius: 20px;
+  text-align: center;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin: 30px auto;
+}
+
+.btn:hover {
+  background-color: #6a6a6a;
 }

@@ -3,9 +3,9 @@
 use yii\helpers\Html;
 use yii\bootstrap4\ActiveForm;
 use kartik\date\DatePicker;
-use yii\helpers\ArrayHelper;
 use kartik\file\FileInput;
 use app\models\Resume;
+use yii\widgets\MaskedInput;
 /* @var $this yii\web\View */
 /* @var $model app\models\Resume */
 /* @var $form yii\bootstrap4\ActiveForm */
@@ -41,7 +41,13 @@ use app\models\Resume;
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'phone')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'phone')->widget(MaskedInput::class, [
+        'mask' => '+7 (999) 999-99-99',
+        'options' => [
+            'class' => 'form-control',
+            'placeholder' => '+7 (___) ___-__-__'
+        ]
+    ]) ?>
 
 
     <div class="form-group">

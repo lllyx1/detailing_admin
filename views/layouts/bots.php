@@ -27,6 +27,16 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
     <?php $this->head() ?>
 </head>
 <body>
+
+<style>
+    .bg-\[\#222222\] {
+        background-image: url(<?= Yii::getAlias('@web/img/eng_word_row_r.svg') ?>);
+        background-position: right;
+        background-repeat: no-repeat;
+        background-size: 150px;
+        background-position-x: calc(100% - 20px);
+    }
+</style>
 <?php $this->beginBody() ?>
 
         <?= $content ?>

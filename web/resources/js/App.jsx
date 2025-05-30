@@ -5,7 +5,6 @@ import Header from './components/city-component/component';
 import FilterBtn from './components/filter-btn-component/component';
 import Card from './components/specialist-card-component/component';
 import Pagination from "./components/pages-component/component";
-import Footer from './components/footer-component/component';
 import "./App.css";
 
 const API_URL = 'https://detailingcitybot.ru/web/api';
@@ -97,7 +96,7 @@ function App() {
           <FilterBtn filters={filters} onChange={onChangeField} />
         </div>
 
-        <div className='flex flex-col gap-4 mt-8 mx-5'>
+        <div className='flex-grow flex flex-col gap-4 mt-8 mx-5'>
           {error && <div className="text-red-600 mb-4">Ошибка: {error}</div>}
           {loading && (
             <div className="space-y-4 animate-pulse">
@@ -127,7 +126,6 @@ function App() {
           totalCount={totalCount || 0}
           pageSize={ITEMS_ON_PAGE}
         />
-        <Footer />
       </main>
     </>
   );

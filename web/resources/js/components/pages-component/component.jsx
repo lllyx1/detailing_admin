@@ -57,7 +57,7 @@ export default function Pages({ currentPage, onPageChange, totalCount, pageSize 
   const pages = getPages();
 
   return (
-    <nav className="flex justify-center" aria-label="Pagination Navigation">
+    <nav className="mt-4 flex justify-center" aria-label="Pagination Navigation">
       <ul className="flex items-center -space-x-px h-10 text-base">
         <li>
           <a

@@ -18,7 +18,7 @@ export default function Card({ name, title, body, photos = [], phone }) {
       <div className="bg-white rounded-2xl border border-[#E7E7E7] p-6 max-w-sm mx-auto">
         <div className="relative">
           <img
-            src={`https://detailingcitybot.ru/${photos[currentIndex]}`}
+            src={`http://detailingcitybot.ru/${photos[currentIndex]}`}
             alt={name}
             className="w-full h-72 object-cover rounded-xl"
           />
@@ -84,6 +84,12 @@ export default function Card({ name, title, body, photos = [], phone }) {
           <div className="font-montserrat text-[#555555] text-base mb-3">{title}</div>
           <p className="text-black text-sm font-montserrat whitespace-pre-line">{body}</p>
         </div>
+        <div className="btn-parent-block text-center">
+          <a href={`tel:${phone}`} className="block text-blue-600 font-montserrat text-sm mt-4 btn">
+            Позвонить
+          </a>
+        </div>
+
       </div>
     </a>
   );
